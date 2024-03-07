@@ -1,11 +1,25 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('send-message').addEventListener('click', function() {
-        var userMessage = document.getElementById('message-input').value;
-        if (!userMessage.trim()) return;
-        document.getElementById('message-input').value = '';
-        var chatOutput = document.getElementById('chat-output');
-        chatOutput.innerHTML += '<div class="user-message" style="text-align: right; color: black;"><strong>You:</strong> ' + userMessage + '</div>';
-        fetch('https://vester-on-gpt-4-granthamblen.replit.app/api/chat', {
+// Toggles the visibility of collapsible sections
+function toggleSection(sectionId) {
+    var section = document.getElementById(sectionId);
+    section.classList.toggle('hidden'); // Toggles a class that hides or shows the section
+}
+
+// Sends the user's message to the backend and appends it to the chat output
+function sendMessage() {
+    var messageInput = document.getElementById('message-input');
+    var chatOutput = document.getElementById('chat-output');
+    var userMessage = messageInput.value.trim();
+
+    if (userMessage) {
+        // Append user message to the chat output
+        chatOutput.innerHTML += `<div class="user-message">${userMessage}</div>`;
+        messageInput.value = ""; // Clear the input after sending
+
+        // TODO: Replace with your actual backend API URL
+        var backendUrl = 'https://vester-on-gpt-4-granthamblen.replit.app/api/chat';
+
+        // Send the user message to the backend
+        fetch(backendUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -14,52 +28,68 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            chatOutput.innerHTML += '<div class="chatbot-response" style="text-align: left; color: black;"><strong>Vester:</strong> ' + data.message + '</div>';
-            chatOutput.scrollTop = chatOutput.scrollHeight;
+            // Append the GPT response to the chat output
+            chatOutput.innerHTML += `<div class="gpt-response">${data.message}</div>`;
+            chatOutput.scrollTop = chatOutput.scrollHeight; // Scroll to the bottom of the chat output
         })
         .catch(error => {
-            console.error('Error:', error);
-            chatOutput.innerHTML += '<div class="error-message" style="color: red;"><strong>Error:</strong> Could not send message</div>';
+            console.error('Error sending message:', error);
         });
-    });
-    document.querySelectorAll('.example-question').forEach(function(button) {
-        button.addEventListener('click', function() {
-            var questionText = this.innerText;
-            document.getElementById('message-input').value = questionText;
-            document.getElementById('send-message').click();
+    }
+}
+
+// Sends the selected file to the backend for upload
+function uploadFile() {
+    var fileInput = document.getElementById('financial-doc-upload');
+    var file = fileInput.files[0];
+
+    if (file) {
+        // TODO: Replace with your actual backend file upload API URL
+        var uploadUrl = 'https://vester-on-gpt-4-granthamblen.replit.app/api/upload';
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        // Send the file to the backend using a POST request with FormData
+        fetch(uploadUrl, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Upload successful:', data);
+            // Handle successful upload here
+        })
+        .catch(error => {
+            console.error('Error uploading file:', error);
         });
-    });
-});
-function openLink(url) {
-    window.open(url, '_blank').focus();
-}
-document.getElementById('message-input').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent the default action to avoid form submission if it's within a form
-        document.getElementById('send-message').click();
+    } else {
+        alert('Please select a file to upload.');
     }
-});
-document.getElementById('message-input').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent the default action to avoid form submission if it's within a form
-        document.getElementById('send-message').click();
-    }
-});
-// Function to validate stock symbol input
-function isValidStockSymbol(symbol) {
-    // Simple regex to check if the symbol only contains letters and is not empty
-    return /^[A-Z]+$/i.test(symbol.trim());
 }
-document.getElementById('send-message').addEventListener('click', function() {
-    var userMessage = document.getElementById('message-input').value;
-    if (!userMessage.trim()) return; // Check if message is not empty
-    // Add a check to see if the message is asking for a stock price
-    if (userMessage.toLowerCase().includes("price of")) {
-        // Extract the stock symbol from the message
-        var symbol = userMessage.split(" ").pop(); // Simplified extraction, adjust as needed
-        if (!isValidStockSymbol(symbol)) {
-            alert("Please enter a valid stock symbol."); // Alert or handle error more gracefully
-            return; // Prevent sending the message
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Event listener for the send message button
+    document.getElementById('send-message').addEventListener('click', sendMessage);
+
+    // Event listener for the Enter key within the message input
+    document.getElementById('message-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent form submission
+            sendMessage();
         }
-    }
+    });
+
+    // Event listener for the file upload button
+    document.getElementById('upload-button').addEventListener('click', uploadFile);
+
+    // Initial setup to hide collapsible sections
+    document.querySelectorAll('.collapsible-section').forEach(section => {
+        section.classList.add('hidden');
+    });
 });
+
+// Utility function to toggle the 'hidden' class
+function toggleHidden(element) {
+    element.classList.toggle('hidden');
+}
