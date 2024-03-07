@@ -1,50 +1,65 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Function to send a message
-    var sendMessage = function() {
+    document.getElementById('send-message').addEventListener('click', function() {
         var userMessage = document.getElementById('message-input').value;
-        if (!userMessage.trim()) return; // Avoid sending empty messages
-        document.getElementById('message-input').value = ''; // Clear input after sending
+        if (!userMessage.trim()) return;
+        document.getElementById('message-input').value = '';
         var chatOutput = document.getElementById('chat-output');
-        // Append the user message to the chat output
         chatOutput.innerHTML += '<div class="user-message" style="text-align: right; color: black;"><strong>You:</strong> ' + userMessage + '</div>';
-        scrollChatToBottom(); // Ensure the latest message is visible
-    };
-    // Event listener for the send message button
-    document.getElementById('send-message').addEventListener('click', sendMessage);
-    // Event listener for pressing the Enter key within the message input
-    document.getElementById('message-input').addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Prevent the default action to avoid submitting the form (if any)
-            sendMessage();
-        }
+        fetch('https://vester-on-gpt-4-granthamblen.replit.app/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: userMessage })
+        })
+        .then(response => response.json())
+        .then(data => {
+            chatOutput.innerHTML += '<div class="chatbot-response" style="text-align: left; color: black;"><strong>Vester:</strong> ' + data.message + '</div>';
+            chatOutput.scrollTop = chatOutput.scrollHeight;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            chatOutput.innerHTML += '<div class="error-message" style="color: red;"><strong>Error:</strong> Could not send message</div>';
+        });
     });
-    // Financial document upload functionality
-    document.querySelector('button[type="button"]').addEventListener('click', function() {
-        var fileInput = document.getElementById('financial-doc-upload');
-        var file = fileInput.files[0]; // Get the file from the input
-        if (!file) {
-            alert('Please select a file to upload.');
-            return;
-        }
-        // Implement the file upload logic here
-        console.log('Uploading:', file.name);
-        // Here, you would typically use FormData and XMLHttpRequest or fetch to send the file to your server
+    document.querySelectorAll('.example-question').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var questionText = this.innerText;
+            document.getElementById('message-input').value = questionText;
+            document.getElementById('send-message').click();
+        });
     });
-    // Function to scroll chat to the bottom
-    function scrollChatToBottom() {
-        var chatOutput = document.getElementById('chat-output');
-        chatOutput.scrollTop = chatOutput.scrollHeight;
+});
+function openLink(url) {
+    window.open(url, '_blank').focus();
+}
+document.getElementById('message-input').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent the default action to avoid form submission if it's within a form
+        document.getElementById('send-message').click();
     }
-    // Function to toggle the collapse state of sections
-    window.toggleCollapse = function(sectionId) {
-        const section = document.getElementById(sectionId);
-        const isCollapsed = section.classList.toggle('collapsed');
-        // Update button label based on the collapsed state
-        const button = section.querySelector('.collapse-btn');
-        if (isCollapsed) {
-            button.textContent = sectionId === 'chat-history-section' ? 'Open History' : 'Open Uploads';
-        } else {
-            button.textContent = sectionId === 'chat-history-section' ? 'Close History' : 'Close Uploads';
+});
+document.getElementById('message-input').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent the default action to avoid form submission if it's within a form
+        document.getElementById('send-message').click();
+    }
+});
+// Function to validate stock symbol input
+function isValidStockSymbol(symbol) {
+    // Simple regex to check if the symbol only contains letters and is not empty
+    return /^[A-Z]+$/i.test(symbol.trim());
+}
+document.getElementById('send-message').addEventListener('click', function() {
+    var userMessage = document.getElementById('message-input').value;
+    if (!userMessage.trim()) return; // Check if message is not empty
+    // Add a check to see if the message is asking for a stock price
+    if (userMessage.toLowerCase().includes("price of")) {
+        // Extract the stock symbol from the message
+        var symbol = userMessage.split(" ").pop(); // Simplified extraction, adjust as needed
+        if (!isValidStockSymbol(symbol)) {
+            alert("Please enter a valid stock symbol."); // Alert or handle error more gracefully
+            return; // Prevent sending the message
         }
-    };
+    }
 });
