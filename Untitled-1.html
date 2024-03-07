@@ -1,34 +1,29 @@
-<!-- Larger Chat Interface -->
-<div id="chat-container" style="max-width: 98%; max-height: 98%; position: absolute; top: 1%; left: 1%; background-color: #F4F4F4; padding: 20px; box-sizing: border-box; overflow: auto; border: 8px solid #007BFF; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <h2 style="color: #0056B3; text-align: center; font-family: 'Arial', sans-serif;">Chat with Vester</h2>
-<div id="chat-output" style="min-height: 300px; height: auto; overflow-y: auto; border: 2px solid #ccc; padding: 10px; margin-bottom: 15px; background-color: white; border-radius: 10px;"></div>
-<!-- Input Box -->
-    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px;">
-        <input type="text" id="message-input" aria-label="Message Input" placeholder="Finance can be difficult! Let me help..." style="width: 70%; padding: 8px; border: 2px solid #ccc; border-radius: 5px; font-family: 'Arial', sans-serif;">
-        <!-- Arrow Button -->
-        <button id="send-message" aria-label="Send Message" style="width: 40px; height: 40px; background-color: #0056B3; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 20px; align-self: center;">↑</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface with Document Upload</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="main-container">
+        <button class="toggle-btn" onclick="toggleSection('chat-history')">Chat History</button>
+        <div id="chat-history" class="collapsible-section"></div>
+
+        <div id="chat-interface">
+            <div id="chat-output"></div>
+            <input type="text" id="message-input" placeholder="Type your message here...">
+            <button id="send-message">Send</button>
+        </div>
+
+        <button class="toggle-btn" onclick="toggleSection('upload-section')">Upload Document</button>
+        <div id="upload-section" class="collapsible-section">
+            <input type="file" id="financial-doc-upload">
+            <button id="upload-button">Upload</button>
+        </div>
     </div>
-    <div id="example-prompts" style="padding: 15px; background-color: #E6E6E6; border-radius: 10px; margin-top: 15px;">
-        <!-- Popular Questions -->
-        <h3 style="color: #0056B3; font-family: 'Arial', sans-serif;">Popular Questions :fire:</h3>
-        <!-- Add your example prompts here with specific classes for each button -->
-        <button class="example-question question1" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">:pig2: 1 in 3 users have asked: <span style="font-weight: bold;">What is a 401K?</span></button>
-        <button class="example-question question2" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">::briefcase: 1 in 5 users have asked: <span style="font-weight: bold;">What are the best investment strategies for beginners?</span></button>
-        <button class="example-question question3" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">::page_facing_up: BUDGET: <span style="font-weight: bold;">What is a budget, and can you help me create one?</span></button>
-        <button class="example-question question4" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">::bar_chart: STOCKS and BONDS: <span style="font-weight: bold;">What are stocks and bonds, and how are they different?</span></button>
-        <button class="example-question question5" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">::credit_card: CREDIT or DEBIT: <span style="font-weight: bold;">What is the difference between a credit card and a debit card?</span></button>
-        <button class="example-question question6" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">::classical_building: TAXES: <span style="font-weight: bold;">How do taxes work and what are the basics I should know?</span></button>
-        <!-- More examples can be added here -->
-    </div>
-    <!-- Insert the Quick Actions Section here -->
-    <div id="quick-actions" style="padding: 15px; background-color: #E6E6E6; border-radius: 10px; margin-top: 15px;">
-        <h3 style="color: #0056B3; font-family: 'Arial', sans-serif;">Quick Actions :rocket:</h3>
-        <!-- Quick Action Buttons -->
-        <button onclick="openLink('https://www.capitalone.com/credit-cards/')" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">Credit Card Information</button>
-        <button onclick="openLink('https://www.rocketmortgage.com/')" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">Mortgage Advice</button>
-        <button onclick="openLink('https://www.acorns.com/')" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">Savings Accounts</button>
-        <button onclick="openLink('https://www.retirefast.co/')" style="background-color: #D3D3D3; border: none; padding: 5px; margin: 5px; border-radius: 4px; cursor: pointer;">Retirement Planning</button>
-        <!-- Add more quick action buttons as needed -->
-    </div>
-</div>
-<script>
+
+    <script src="script.js"></script>
+</body>
+</html>
