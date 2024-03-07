@@ -2,10 +2,11 @@
   "name": "chat-interface",
   "version": "1.0.0",
   "description": "A simple chat interface with document upload functionality.",
-  "main": "document.js",
+  "main": "index.js",
   "scripts": {
     "start": "http-server . -p 8000",
-    "dev": "nodemon -w . -e html,js,css -x 'http-server . -p 8000'"
+    "dev": "nodemon -w . -e html,js,css -x 'http-server . -p 8000'",
+    "build": "echo 'No build step is required for static assets.'"
   },
   "keywords": ["chat", "document-upload", "frontend"],
   "author": "joshuanh2",
